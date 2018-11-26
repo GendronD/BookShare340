@@ -1,0 +1,251 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a href="/homepage" class="navbar-brand">Home</a>
+  <div class="navbar-header">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item"><a class="nav-link" href="/usersform">Users</a></li>
+      <li class="nav-item"><a class="nav-link" href="/authorsform">Authors</a></li>
+      <li class="nav-item"><a class="nav-link" href="/booksform">Books</a></li>
+      <li class="nav-item"><a class="nav-link" href="/genresform">Genres</a></li>
+      <li class="nav-item"><a class="nav-link" href="/buytradesellform">BuyTradeSell</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="container">
+  <div class="jumbotron">
+    <legend><b>Find Matches for Books!</b></legend>
+    <form class="" action="/homepage" method="post">
+      <div class="form-group">
+        <h6>Select a User to populate their list of BTS Books!</h6>
+        <label for="">User:</label>
+        <select name="user_id" onchange="filterBooks(this.value)">
+          <option value="" disabled selected>Pick A User!</option>
+          {{#each users}}
+          <option value="{{user_id}}">{{fname}} {{lname}}</option>
+          {{/each}}
+        </select>
+
+      </div>
+      <div class="form-group">
+        <label for="">Book From Buy Trade Sell:</label>
+        <select id="val" name="id" onchange="showTable(this.value)">
+          <option value="" disabled selected>Pick Your Book!</option>
+        </select>
+      </div>
+      <div>
+        <h3>Selected Book Attributes</h3>
+        <div class="container">
+          <table class="table" id="btsInfo">
+            <tr>
+              <th>User</th>
+              <th>Book</th>
+              <th>Search Radius (Mi)</th>
+              <th>Buy</th>
+              <th>Trading</th>
+              <th>Trading for</th>
+              <th>Sell</th>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div>
+        <h4>Please Confirm Book Matches User Before Match Submission</h4>
+        <h6>This is for if you chose multiple options in BTS</h6>
+        <select class="" name="choice">
+          <option value="" disabled selected>Define you BTS Choice</option>
+          <option value="1">Buy</option>
+          <option value="2">Trading</option>
+          <option value="3">Trading For</option>
+          <option value="4">Sell</option>
+        </select>
+        <br>
+        <br>
+      </div>
+      <input type="submit" value="Submit">
+      <!--<button onclick="findMatches(this.choice)">Find Matches!</button>-->
+    </form>
+  </div>
+</div>
+<!--
+<div class="container">
+  <table class="table" id="matches">
+    <h3>Matches</h3>
+    <thead>
+      <th>Name</th>
+      <th>Title</th>
+      <th>Location</th>
+      <th>Distance</th>
+    </thead>
+    {{#each matches}}
+    <tr>
+      <td>{{name}}</td>
+      <td>{{title}}</td>
+      <td>{{location}}</td>
+      <td>{{distance}} Miles</td>
+      <td>
+    </tr>
+    {{/each}}
+</div>-->
+
+<script>
+  function showTable(id) {
+    console.log("bts table:" + id);
+    var req = new XMLHttpRequest();
+    req.open("GET", "/homepage/" + id, true);
+    req.addEventListener('load', function () {
+      if (req.status >= 200 && req.status < 400) {
+        var data = JSON.parse(req.responseText);
+        var table = document.getElementById("btsInfo");
+        var row = table.insertRow(-1);
+        var tester = document.getElementById('1');
+
+        if (tester != null) {
+          var rowDel = document.getElementById(1);
+          rowDel.parentNode.removeChild(rowDel);
+        }
+
+        row.setAttribute('id', 1);
+
+        var name = data.showtable[0].name;
+        var title = data.showtable[0].title;
+        var search_radius = data.showtable[0].search_radius;
+        var buy = data.showtable[0].buy;
+        var trading = data.showtable[0].trading;
+        var trading_for = data.showtable[0].trading_for;
+        var sell = data.showtable[0].sell;
+
+        var nameCell = document.createElement("td");
+        nameCell.textContent = name;
+        row.appendChild(nameCell);
+        var titleCell = document.createElement("td");
+        titleCell.textContent = title;
+        row.appendChild(titleCell);
+        var srCell = document.createElement("td");
+        srCell.textContent = search_radius;
+        row.appendChild(srCell);
+        var buyCell = document.createElement("td");
+        buyCell.textContent = buy;
+        row.appendChild(buyCell);
+        var tCell = document.createElement("td");
+        tCell.textContent = trading;
+        row.appendChild(tCell);
+        var tfCell = document.createElement("td");
+        tfCell.textContent = trading_for;
+        row.appendChild(tfCell);
+        var sCell = document.createElement("td");
+        sCell.textContent = sell;
+        row.appendChild(sCell);
+        row.style.textAlign = "center";
+        table.appendChild(row);
+      }
+      else {
+        console.log("Error: " + req.statusText);
+      }
+    })
+    req.send();
+    event.preventDefault();
+  }
+
+  function filterBooks(user_id) {
+    console.log("filter books:" + user_id);
+    var req = new XMLHttpRequest();
+    req.open("GET", "/homepage/filter/" + user_id, true);
+    req.addEventListener('load', function () {
+      if (req.status >= 200 && req.status < 400) {
+        var data = JSON.parse(req.responseText);
+        //console.log("after filter books");
+        //console.log(data.filteredBooks);
+        var selectList = document.getElementById("val");
+        for (var i = 0; i < data.filteredBooks.length; i++) {
+          var option = document.createElement("option");
+          option.value = data.filteredBooks[i].id;
+          option.text = data.filteredBooks[i].title;
+          selectList.appendChild(option);
+        }
+      } else {
+        console.log("Error: " + req.statusText);
+      }
+    })
+    req.send();
+    event.preventDefault();
+  }
+
+
+  /*
+  function findMatches(choice) {
+    //console.log("bts table:" + id);
+    console.log("this choice:" + choice);
+    var req = new XMLHttpRequest();
+    req.open("GET", "/homepage/matches/" + choice, true);
+    req.addEventListener('load', function () {
+      if (req.status >= 200 && req.status < 400) {
+        console.log("within table building for matches");
+        //console.log("No Errors in table depiction");
+        //console.log(req.response);
+
+
+        var data = JSON.parse(req.responseText);
+        //console.log(data.showtable[0]);
+
+        var table = document.getElementById("matches");
+
+        console.log(data.matches);
+
+        for (var i = 0; i < matches.length; i++) {
+          var row = table.insertRow(-1);
+          var name = data.matches[i].name;
+          var title = data.matches[i].title;
+          var location = data.matches[i].location
+          var distance = data.matches[i].distance;
+
+          var nameCell = document.createElement("td");
+          nameCell.textContent = name;
+          row.appendChild(nameCell);
+          var titleCell = document.createElement("td");
+          titleCell.textContent = title;
+          row.appendChild(titleCell);
+          var loacCell = document.createElement("td");
+          loacCell.textContent = location;
+          row.appendChild(locCell);
+          var distCell = document.createElement("td");
+          distCell.textContent = distance;
+          row.appendChild(distCell);
+          row.style.textAlign = "center";
+          table.appendChild(row);
+        }
+      }
+      else {
+        console.log("Error: " + req.statusText);
+      }
+    })
+    req.send();
+    event.preventDefault();
+  }
+  */
+
+</script>
+
+<!--BootStrap JavaScript-->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+  crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+  crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+  crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+  crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+  crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+  crossorigin="anonymous"></script>

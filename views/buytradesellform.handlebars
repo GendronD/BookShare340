@@ -1,0 +1,168 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a href="/homepage" class="navbar-brand">Home</a>
+  <div class="navbar-header">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item"><a class="nav-link" href="/usersform">Users</a></li>
+      <li class="nav-item"><a class="nav-link" href="/authorsform">Authors</a></li>
+      <li class="nav-item"><a class="nav-link" href="/booksform">Books</a></li>
+      <li class="nav-item"><a class="nav-link" href="/genresform">Genres</a></li>
+      <li class="nav-item"><a class="nav-link" href="/buytradesellform">BuyTradeSell</a></li>
+    </ul>
+  </div>
+</nav>
+<div class="container">
+  <div class="jumbotron">
+    <form class="buy-trade-sell" action="" method="post">
+      <fieldset>
+        <legend><b>Buy-Trade-Sell Form</b></legend>
+        User:
+        <select class="" name="userID">
+          {{#each users}}
+          <option value="{{user_id}}">{{fname}} {{lname}}</option>
+          {{/each}}
+        </select>
+        <br>
+        <br>
+        Book:
+        <select class="book" name="book">
+          {{#each books}}
+          <option value="{{book_id}}">{{title}}</option>
+          {{/each}}
+        </select>
+        <br>
+        <br>
+        Search Radius (Miles):
+        <select class="search_radius" name="search_radius">
+          <option value="1">1</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+          <option value="25">25</option>
+          <option value="30">30</option>
+          <option value="40">40</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="150">150</option>
+          <option value="200">200</option>
+        </select>
+        <br>
+        <h3>I'm Looking To:</h3>
+        Buy:
+        <select class="" name="buy">
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
+        <br>
+        Trading:
+        <select class="" name="trading">
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
+        <br>
+        Trading For:
+        <select class="" name="trading_for">
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
+        <br>
+        Sell:
+        <select class="" name="sell">
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+        </select>
+        <br>
+        <br>
+        <input type="submit" name="" value="Submit">
+      </fieldset>
+    </form>
+  </div>
+</div>
+
+<div class="container">
+  <table class="table">
+    <h3>Buy-Trade-Sell</h3>
+    <tr>
+      <th>ID</th>
+      <th>User</th>
+      <th>Book</th>
+      <th>Search Radius (Mi)</th>
+      <th>Buy</th>
+      <th>Trading</th>
+      <th>Trading for</th>
+      <th>Sell</th>
+    </tr>
+    {{#each btsform}}
+    <tr id="{{id}}">
+      <td>{{id}}</td>
+      <td>{{name}}</td>
+      <td>{{title}}</td>
+      <td>{{search_radius}}</td>
+      <td>{{buy}}</td>
+      <td>{{trading}}</td>
+      <td>{{trading_for}}</td>
+      <td>{{sell}}</td>
+      <td><button onclick="deleteBTS({{id}})">Delete</button></td>
+      <td><a href="/updateBTS/{{id}}">Update</a></td>
+    </tr>
+    {{/each}}
+  </table>
+</div>
+
+<script>
+  function deleteBTS(id) {
+    console.log("delete id:" + id);
+    var req = new XMLHttpRequest();
+    var row = document.getElementById(id);
+    row.parentNode.removeChild(row);
+
+    console.log("Deleting Row");
+
+    req.open("DELETE", "/buytradesellform/" + id, true);
+    req.addEventListener('load', function () {
+      if (req.status >= 200 && req.status < 400) {
+        console.log("No Errors in Deletion");
+      }
+      else {
+        console.log("Error: " + req.statusText);
+      }
+    })
+    req.send(id);
+    event.preventDefault();
+  }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+  crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+  crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+  crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+  crossorigin="anonymous">
+
+<!--BootStrap JavaScript-->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+  crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+  crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+  crossorigin="anonymous"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+  crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+  crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+  crossorigin="anonymous"></script>
