@@ -28,6 +28,7 @@
       <div class="form-group">
         <label for="">Author:</label>
         <select name="author">
+          <option value="" disabled selected>Select An Author!</option>
           {{#each authors}}
           <option value="{{author_id}}">{{fname}} {{lname}}</option>
           {{/each}}
@@ -35,6 +36,7 @@
       </div>
       <label> Genre </label>
       <select name="genre">
+        <option value="" disabled selected>Select The Genre!</option>
         {{#each genres}}
         <option value="{{id}}">{{genre_name}}</option>
         {{/each}}
