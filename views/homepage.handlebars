@@ -23,8 +23,8 @@
     <form class="" action="/homepage" method="post">
       <div class="form-group">
         <h6>Select a User to populate their list of BTS Books!</h6>
-        <label for="">User:</label>
-        <select name="user_id" onchange="filterBooks(this.value)">
+        <label id="userPick" for="">User:</label>
+        <select id="no_del" name="user_id" onchange="filterBooks(this.value)">
           <option value="" disabled selected>Pick A User!</option>
           {{#each users}}
           <option value="{{user_id}}">{{fname}} {{lname}}</option>
@@ -34,7 +34,7 @@
       </div>
       <div class="form-group">
         <label for="">Book From Buy Trade Sell:</label>
-        <select id="val" name="id" onchange="showTable(this.value)">
+        <select id="val" name="id" onchange="showTable(this.value)" onselect="showTable(this.value)">
           <option value="" disabled selected>Pick Your Book!</option>
         </select>
       </div>
@@ -58,7 +58,7 @@
         <h4>Please Confirm Book Matches User Before Match Submission</h4>
         <h6>This is for if you chose multiple options in BTS</h6>
         <select class="" name="choice">
-          <option value="" disabled selected>Define you BTS Choice</option>
+          <option value="" disabled selected>Define your BTS Choice</option>
           <option value="1">Buy</option>
           <option value="2">Trading</option>
           <option value="3">Trading For</option>
@@ -68,30 +68,9 @@
         <br>
       </div>
       <input type="submit" value="Submit">
-      <!--<button onclick="findMatches(this.choice)">Find Matches!</button>-->
     </form>
   </div>
 </div>
-<!--
-<div class="container">
-  <table class="table" id="matches">
-    <h3>Matches</h3>
-    <thead>
-      <th>Name</th>
-      <th>Title</th>
-      <th>Location</th>
-      <th>Distance</th>
-    </thead>
-    {{#each matches}}
-    <tr>
-      <td>{{name}}</td>
-      <td>{{title}}</td>
-      <td>{{location}}</td>
-      <td>{{distance}} Miles</td>
-      <td>
-    </tr>
-    {{/each}}
-</div>-->
 
 <script>
   function showTable(id) {
@@ -159,14 +138,40 @@
     req.addEventListener('load', function () {
       if (req.status >= 200 && req.status < 400) {
         var data = JSON.parse(req.responseText);
-        //console.log("after filter books");
-        //console.log(data.filteredBooks);
         var selectList = document.getElementById("val");
-        for (var i = 0; i < data.filteredBooks.length; i++) {
+        var tester2 = document.getElementById("2");
+
+        if (tester2 != null) {
+          for (var i = 0; i <= data.filteredBooks.length + 1; i++) {
+            selectList.remove(data.filteredBooks[i]);
+            console.log("removing child: " + i);
+          }
           var option = document.createElement("option");
-          option.value = data.filteredBooks[i].id;
-          option.text = data.filteredBooks[i].title;
+          option.disabled = true;
+          option.selected = true;
+          option.text = "Pick Your Book!"
           selectList.appendChild(option);
+          for (var i = 0; i < data.filteredBooks.length; i++) {
+            var option = document.createElement("option");
+            option.value = data.filteredBooks[i].id;
+            option.text = data.filteredBooks[i].title;
+            option.setAttribute('id', 2);
+            if (data.filteredBooks.length == 1) {
+              console.log("selectedddd1");
+            }
+            selectList.appendChild(option);
+          }
+        } else {
+          for (var i = 0; i < data.filteredBooks.length; i++) {
+            var option = document.createElement("option");
+            option.value = data.filteredBooks[i].id;
+            option.text = data.filteredBooks[i].title;
+            option.setAttribute('id', 2);
+            if (data.filteredBooks.length == 1) {
+              console.log("selectedddd2");
+            }
+            selectList.appendChild(option);
+          }
         }
       } else {
         console.log("Error: " + req.statusText);
@@ -175,60 +180,6 @@
     req.send();
     event.preventDefault();
   }
-
-
-  /*
-  function findMatches(choice) {
-    //console.log("bts table:" + id);
-    console.log("this choice:" + choice);
-    var req = new XMLHttpRequest();
-    req.open("GET", "/homepage/matches/" + choice, true);
-    req.addEventListener('load', function () {
-      if (req.status >= 200 && req.status < 400) {
-        console.log("within table building for matches");
-        //console.log("No Errors in table depiction");
-        //console.log(req.response);
-
-
-        var data = JSON.parse(req.responseText);
-        //console.log(data.showtable[0]);
-
-        var table = document.getElementById("matches");
-
-        console.log(data.matches);
-
-        for (var i = 0; i < matches.length; i++) {
-          var row = table.insertRow(-1);
-          var name = data.matches[i].name;
-          var title = data.matches[i].title;
-          var location = data.matches[i].location
-          var distance = data.matches[i].distance;
-
-          var nameCell = document.createElement("td");
-          nameCell.textContent = name;
-          row.appendChild(nameCell);
-          var titleCell = document.createElement("td");
-          titleCell.textContent = title;
-          row.appendChild(titleCell);
-          var loacCell = document.createElement("td");
-          loacCell.textContent = location;
-          row.appendChild(locCell);
-          var distCell = document.createElement("td");
-          distCell.textContent = distance;
-          row.appendChild(distCell);
-          row.style.textAlign = "center";
-          table.appendChild(row);
-        }
-      }
-      else {
-        console.log("Error: " + req.statusText);
-      }
-    })
-    req.send();
-    event.preventDefault();
-  }
-  */
-
 </script>
 
 <!--BootStrap JavaScript-->
