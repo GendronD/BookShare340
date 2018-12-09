@@ -33,6 +33,10 @@
             <div class="form-group">
                 <label for="">Author:</label>
                 <select name="author">
+                    <!--<option value="" disabled selected>Select An Author!</option>-->
+                    {{#each bookUpdate}}
+                    <option value="{{author_id}}" disabled selected>{{name}}</option>
+                    {{/each}}
                     {{#each authors}}
                     <option value="{{author_id}}">{{fname}} {{lname}}</option>
                     {{/each}}
@@ -40,6 +44,10 @@
             </div>
             <label> Genre </label>
             <select name="genre">
+                <!--<option value="" disabled selected>Select The Genre!</option>-->
+                {{#each bookUpdate}}
+                <option value="{{genre_id}}" disabled selected>{{genre_name}}</option>
+                {{/each}}
                 {{#each genres}}
                 <option value="{{id}}">{{genre_name}}</option>
                 {{/each}}
@@ -49,9 +57,6 @@
         </form>
     </div>
 </div>
-
-
-
 
 <!--BootStrap JavaScript-->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
