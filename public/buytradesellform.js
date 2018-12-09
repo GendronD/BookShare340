@@ -37,7 +37,7 @@ module.exports = function(){
     // Retrieves the Specific BTS to be Updated
     function getBTSUpdate(res, mysql, context, id, complete){
       console.log('get bts in update');
-      mysql.pool.query("SELECT id, u.fname, u.lname, b.title, bst.search_radius, buy, trading, trading_for, sell FROM Buy_Trade_Sell bst INNER JOIN Users u ON u.user_id = bst.userID INNER JOIN Books b ON b.book_id = bst.book WHERE id = " + id, function(error, results, fields){
+      mysql.pool.query("SELECT id, u.fname, u.lname, u.user_id, b.book_id, b.title, bst.search_radius, buy, trading, trading_for, sell FROM Buy_Trade_Sell bst INNER JOIN Users u ON u.user_id = bst.userID INNER JOIN Books b ON b.book_id = bst.book WHERE id = " + id, function(error, results, fields){
         if(error){
           console.log("why errors....");
           res.write(JSON.stringify(error));
