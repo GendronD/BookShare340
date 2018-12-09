@@ -29,7 +29,7 @@ module.exports = function(){
 
   function getBook(res, mysql, context, complete){
     console.log('getting books');
-    mysql.pool.query("SELECT b.book_id, b.title, CONCAT(a.fname, ' ', a.lname) AS name, g.genre_name AS genre_name FROM Books b INNER JOIN Book_Author ba ON ba.book_id = b.book_id AND b.author = ba.author_id INNER JOIN Author a ON a.author_id = ba.author_id INNER JOIN Genre g ON b.genre = g.genre_id", function(error, results, fields){
+    mysql.pool.query("SELECT b.book_id, b.title, CONCAT(a.fname, ' ', a.lname) AS name, g.genre_name AS genre_name FROM Books b INNER JOIN Book_Author ba ON ba.book_id = b.book_id INNER JOIN Author a ON a.author_id = ba.author_id INNER JOIN Genre g ON b.genre = g.genre_id", function(error, results, fields){
       if(error){
         console.log('error books');
         res.write(JSON.stringify(error));
@@ -44,17 +44,20 @@ module.exports = function(){
     // Retrieves the Specific Book to be Updated
     function getBookUpdate(res, mysql, context, id, complete){
       console.log('get genre in update');
-      mysql.pool.query("SELECT book_id, title, author, genre FROM Books WHERE book_id = " + id, function(error, results, fields){
+      mysql.pool.query("SELECT b.book_id, b.title, a.author_id, CONCAT(a.fname, ' ', a.lname) AS name, g.genre_id, g.genre_name AS genre_name FROM Books b INNER JOIN Book_Author ba ON ba.book_id = b.book_id INNER JOIN Author a ON a.author_id = ba.author_id INNER JOIN Genre g ON b.genre = g.genre_id WHERE b.book_id = " + id, function(error, results, fields){
         if(error){
           console.log("why errors....");
           res.write(JSON.stringify(error));
         }
         context.bookUpdate = results;
         console.log("bookUpdate Results:");
+        console.log("new version running");
         console.log(context.bookUpdate);
         complete();
       })
     }
+
+    //SELECT book_id, title, author, genre FROM Books WHERE book_id = 
 
   function getBookAuthor(res, mysql, context, complete){
     console.log('getting books author');
@@ -160,15 +163,25 @@ module.exports = function(){
     console.log('req id: ' + req.body.book_id);
     var mysql = req.app.get('mysql');
     var sql = "UPDATE Books SET title = ?, author = ?, genre = ? WHERE book_id = ?";
+    var sql2 = 'UPDATE Book_Author SET book_id = ?, author_id = ? WHERE book_id = ?';
     var inserts = [req.body.title, req.body.author, req.body.genre, req.body.book_id];
     sql = mysql.pool.query(sql, inserts, function(error, results, fields){
+
         if(error){
           console.log('inside update route error');
             res.write(JSON.stringify(error));
             res.status(400);
             res.end();
         }else{
-            res.redirect('/booksform');
+          var inserts2 = [req.body.book_id, req.body.author, req.body.book_id];
+          sql2 = mysql.pool.query(sql2, inserts2, function(error, results, fields) {
+            if(error) {
+              console.log('errors in second query for update')
+              res.write(JSON.stringify(error));
+              res.end();
+            }
+          });
+          res.redirect('/booksform');
         }
     });
   });
