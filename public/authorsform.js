@@ -41,7 +41,7 @@ module.exports = function(){
       })
     }
 
-    // Gets genre to be updated
+    // Gets author to be updated
     router.get('/:id', function(req, res) {
       console.log("updater function for author");
       console.log("id passed: " + req.params.id);
@@ -90,7 +90,7 @@ module.exports = function(){
     });
   });
 
-  // Updates Genre
+  // Updates Author
   router.post('/update', function(req, res){
     console.log('inside update route for author');
     console.log('req body: ' + req.body.fname);
@@ -114,3 +114,4 @@ module.exports = function(){
 
   return router;
 }();
+
