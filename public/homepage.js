@@ -105,14 +105,7 @@ module.exports = function(){
               res.status(400);
               res.end();
           }else{
-              //console.log("We in business");
               context.matches = results;
-              //context.showtable = results;
-              //console.log(results);
-              //res.send(context);
-              //res.redirect('/homepage');
-              //res.send(context);
-              //res.redirect('/homepage');
               res.render('matches', context);
           }
       });
