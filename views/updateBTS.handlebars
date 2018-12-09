@@ -26,6 +26,10 @@
                 {{/each}}
                 User:
                 <select class="" name="userID">
+                    <!--<option value="" disabled selected>Pick A User!</option>-->
+                    {{#each btsUpdate}}
+                    <option value="{{user_id}}" disabled selected>{{fname}} {{lname}}</option>
+                    {{/each}}
                     {{#each users}}
                     <option value="{{user_id}}">{{fname}} {{lname}}</option>
                     {{/each}}
@@ -34,6 +38,10 @@
                 <br>
                 Book:
                 <select class="book" name="book">
+                    <!--<option value="" disabled selected>Pick A Book!</option>-->
+                    {{#each btsUpdate}}
+                    <option value="{{book_id}}" disabled selected>{{title}}</option>
+                    {{/each}}
                     {{#each books}}
                     <option value="{{book_id}}">{{title}}</option>
                     {{/each}}
@@ -42,6 +50,9 @@
                 <br>
                 Search Radius (Miles):
                 <select class="search_radius" name="search_radius">
+                    {{#each btsUpdate}}
+                    <option value="{{search_radius}}" disabled selected>{{search_radius}}</option>
+                    {{/each}}
                     <option value="1">1</option>
                     <option value="5">5</option>
                     <option value="10">10</option>
