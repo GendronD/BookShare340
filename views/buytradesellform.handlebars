@@ -24,6 +24,7 @@
         <legend><b>Buy-Trade-Sell Form</b></legend>
         User:
         <select class="" name="userID">
+          <option value="" disabled selected>Pick A User!</option>
           {{#each users}}
           <option value="{{user_id}}">{{fname}} {{lname}}</option>
           {{/each}}
@@ -32,6 +33,7 @@
         <br>
         Book:
         <select class="book" name="book">
+          <option value="" disabled selected>Pick A Book!</option>
           {{#each books}}
           <option value="{{book_id}}">{{title}}</option>
           {{/each}}
